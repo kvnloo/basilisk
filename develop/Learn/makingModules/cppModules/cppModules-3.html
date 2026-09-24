@@ -182,11 +182,12 @@
 <p>The module function is defined in the <code class="docutils literal notranslate"><span class="pre">SomeModule.cpp</span></code> file.  This page outlines key expected behaviors.</p>
 <section id="constructor">
 <h2>Constructor<a class="headerlink" href="#constructor" title="Link to this heading"></a></h2>
-<p>The constructor ensure that all class variables that require default values are setup correctly.  For example, in the tutorial <code class="docutils literal notranslate"><span class="pre">SomeModule</span></code> class we are using in this documenation, assume the class variable <code class="docutils literal notranslate"><span class="pre">dummy</span></code> must be <code class="docutils literal notranslate"><span class="pre">42</span></code> be default.  This is done using:</p>
-<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cm">/*! Module Constructor */</span>
+<p>The constructor sets up class variables that require default values. For example, initialize the
+sample runtime counter <code class="docutils literal notranslate"><span class="pre">updateCounter</span></code> to zero:</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cm">/*! @brief Initialize the sample runtime counter. */</span>
 <span class="n">SomeModule</span><span class="o">::</span><span class="n">SomeModule</span><span class="p">()</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="n">self</span><span class="o">-&gt;</span><span class="n">dummy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">42.0</span><span class="p">;</span>
+<span class="w">    </span><span class="k">this</span><span class="o">-&gt;</span><span class="n">updateCounter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span><span class="w">  </span><span class="c1">// [-]</span>
 <span class="p">}</span>
 </pre></div>
 </div>

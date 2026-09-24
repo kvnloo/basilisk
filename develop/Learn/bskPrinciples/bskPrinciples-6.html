@@ -155,14 +155,18 @@ module variable logging is for debugging and unit tests.</p>
 the single task.  However, no messages are connected here.  Rather, this sample code illustrates how
 to record module internal variables.  The variables are either public C++ class variables,
 private C++ variables which have a getter method, or they are
-variables with the C module configuration structure.  Both <a class="reference internal" href="../../Documentation/moduleTemplates/cModuleTemplate/cModuleTemplate.html#cmoduletemplate"><span class="std std-ref">C Module: cModuleTemplate</span></a> and
-<a class="reference internal" href="../../Documentation/moduleTemplates/cppModuleTemplate/cppModuleTemplate.html#cppmoduletemplate"><span class="std std-ref">C++ Module: cppModuleTemplate</span></a> have the exact same variables for easy comparison.</p>
+variables in the C module configuration structure. Both <a class="reference internal" href="../../Documentation/moduleTemplates/cModuleTemplate/cModuleTemplate.html#cmoduletemplate"><span class="std std-ref">C Module: cModuleTemplate</span></a> and
+<a class="reference internal" href="../../Documentation/moduleTemplates/cppModuleTemplate/cppModuleTemplate.html#cppmoduletemplate"><span class="std std-ref">C++ Module: cppModuleTemplate</span></a> expose the sample variables <code class="docutils literal notranslate"><span class="pre">updateCounter</span></code> and <code class="docutils literal notranslate"><span class="pre">sampleConfigVector</span></code> for comparison.</p>
 <img alt="../../_images/qs-bsk-6.svg" class="align-center" src="../../_images/qs-bsk-6.svg" />
 <p>The sample code is shown below.  The C and C++ modules are set up as before.  The variable
 <code class="docutils literal notranslate"><span class="pre">someVariable</span></code> of module <code class="docutils literal notranslate"><span class="pre">someModule</span></code> is set in python using <code class="docutils literal notranslate"><span class="pre">someModule.someVariable</span> <span class="pre">=</span> <span class="pre">...</span></code>
 if the module variable is public (all C modules and some C++ modules).  If the C++ module variable is
 private, but has a public setter function, then it is set using the setter
 method <code class="docutils literal notranslate"><span class="pre">someModule.setSomeVariable(...)</span></code> as outlined in <a class="reference internal" href="../makingModules/cppModules/cppModules-1.html#cppmodules-1"><span class="std std-ref">Module Header File</span></a>.</p>
+<p>Here <code class="docutils literal notranslate"><span class="pre">updateCounter</span></code> is a runtime counter: the assignment demonstrates variable access, and
+<code class="docutils literal notranslate"><span class="pre">InitializeSimulation()</span></code> calls <code class="docutils literal notranslate"><span class="pre">Reset()</span></code> to clear it before updates begin. <code class="docutils literal notranslate"><span class="pre">sampleConfigVector</span></code> is a
+sample configuration vector retained across resets and updates for logging; it does not affect the
+output calculation. See <a class="reference internal" href="../../Documentation/moduleTemplates/cModuleTemplate/cModuleTemplate.html#moduletemplatevariableroles"><span class="std std-ref">Configuration and Runtime State</span></a> for the roles of the template variables.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span>
 <span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">Basilisk.moduleTemplates</span><span class="w"> </span><span class="kn">import</span> <span class="n">cModuleTemplate</span>
 <span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">Basilisk.moduleTemplates</span><span class="w"> </span><span class="kn">import</span> <span class="n">cppModuleTemplate</span>
@@ -193,16 +197,16 @@ method <code class="docutils literal notranslate"><span class="pre">someModule.s
 <span class="linenos">28</span>    <span class="n">mod2</span><span class="o">.</span><span class="n">ModelTag</span> <span class="o">=</span> <span class="s2">"cppModule2"</span>
 <span class="linenos">29</span>    <span class="n">scSim</span><span class="o">.</span><span class="n">AddModelToTask</span><span class="p">(</span><span class="s2">"dynamicsTask"</span><span class="p">,</span> <span class="n">mod2</span><span class="p">)</span>
 <span class="linenos">30</span>
-<span class="linenos">31</span>    <span class="c1"># set module variables</span>
-<span class="linenos">32</span>    <span class="n">mod1</span><span class="o">.</span><span class="n">dummy</span> <span class="o">=</span> <span class="mi">1</span>
-<span class="linenos">33</span>    <span class="n">mod1</span><span class="o">.</span><span class="n">dumVector</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]</span>
-<span class="linenos">34</span>    <span class="n">mod2</span><span class="o">.</span><span class="n">setDummy</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="linenos">35</span>    <span class="n">mod2</span><span class="o">.</span><span class="n">setDumVector</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="linenos">31</span>    <span class="c1"># Initialization clears updateCounter and preserves sampleConfigVector.</span>
+<span class="linenos">32</span>    <span class="n">mod1</span><span class="o">.</span><span class="n">updateCounter</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># [-] Runtime counter</span>
+<span class="linenos">33</span>    <span class="n">mod1</span><span class="o">.</span><span class="n">sampleConfigVector</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]</span>  <span class="c1"># [-] Sample configuration</span>
+<span class="linenos">34</span>    <span class="n">mod2</span><span class="o">.</span><span class="n">setUpdateCounter</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># [-] Runtime counter</span>
+<span class="linenos">35</span>    <span class="n">mod2</span><span class="o">.</span><span class="n">setSampleConfigVector</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>  <span class="c1"># [-] Sample configuration</span>
 <span class="linenos">36</span>
 <span class="linenos">37</span>    <span class="c1"># request these module variables to be recorded</span>
-<span class="linenos">38</span>    <span class="n">mod1Logger</span> <span class="o">=</span> <span class="n">mod1</span><span class="o">.</span><span class="n">logger</span><span class="p">(</span><span class="s2">"dummy"</span><span class="p">,</span> <span class="n">macros</span><span class="o">.</span><span class="n">sec2nano</span><span class="p">(</span><span class="mf">1.</span><span class="p">))</span>
+<span class="linenos">38</span>    <span class="n">mod1Logger</span> <span class="o">=</span> <span class="n">mod1</span><span class="o">.</span><span class="n">logger</span><span class="p">(</span><span class="s2">"updateCounter"</span><span class="p">,</span> <span class="n">macros</span><span class="o">.</span><span class="n">sec2nano</span><span class="p">(</span><span class="mf">1.</span><span class="p">))</span>
 <span class="linenos">39</span>    <span class="n">scSim</span><span class="o">.</span><span class="n">AddModelToTask</span><span class="p">(</span><span class="s2">"dynamicsTask"</span><span class="p">,</span> <span class="n">mod1Logger</span><span class="p">)</span>
-<span class="linenos">40</span>    <span class="n">mod2Logger</span> <span class="o">=</span> <span class="n">mod2</span><span class="o">.</span><span class="n">logger</span><span class="p">([</span><span class="s2">"dummy"</span><span class="p">,</span> <span class="s2">"dumVector"</span><span class="p">])</span>
+<span class="linenos">40</span>    <span class="n">mod2Logger</span> <span class="o">=</span> <span class="n">mod2</span><span class="o">.</span><span class="n">logger</span><span class="p">([</span><span class="s2">"updateCounter"</span><span class="p">,</span> <span class="s2">"sampleConfigVector"</span><span class="p">])</span>
 <span class="linenos">41</span>    <span class="n">scSim</span><span class="o">.</span><span class="n">AddModelToTask</span><span class="p">(</span><span class="s2">"dynamicsTask"</span><span class="p">,</span> <span class="n">mod2Logger</span><span class="p">)</span>
 <span class="linenos">42</span>
 <span class="linenos">43</span>    <span class="c1">#  initialize Simulation:</span>
@@ -216,18 +220,18 @@ method <code class="docutils literal notranslate"><span class="pre">someModule.s
 <span class="linenos">51</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">"Times: "</span><span class="p">,</span> <span class="n">mod1Logger</span><span class="o">.</span><span class="n">times</span><span class="p">())</span>
 <span class="linenos">52</span>
 <span class="linenos">53</span>    <span class="c1"># Print values logged</span>
-<span class="linenos">54</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">"mod1.dummy:"</span><span class="p">)</span>
-<span class="linenos">55</span>    <span class="nb">print</span><span class="p">(</span><span class="n">mod1Logger</span><span class="o">.</span><span class="n">dummy</span><span class="p">)</span>
-<span class="linenos">56</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">"mod2.dummy:"</span><span class="p">)</span>
-<span class="linenos">57</span>    <span class="nb">print</span><span class="p">(</span><span class="n">mod2Logger</span><span class="o">.</span><span class="n">dummy</span><span class="p">)</span>
-<span class="linenos">58</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">"mod2.getDumVector():"</span><span class="p">)</span>
-<span class="linenos">59</span>    <span class="nb">print</span><span class="p">(</span><span class="n">mod2Logger</span><span class="o">.</span><span class="n">dumVector</span><span class="p">)</span>
+<span class="linenos">54</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">"mod1.updateCounter:"</span><span class="p">)</span>
+<span class="linenos">55</span>    <span class="nb">print</span><span class="p">(</span><span class="n">mod1Logger</span><span class="o">.</span><span class="n">updateCounter</span><span class="p">)</span>
+<span class="linenos">56</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">"mod2.updateCounter:"</span><span class="p">)</span>
+<span class="linenos">57</span>    <span class="nb">print</span><span class="p">(</span><span class="n">mod2Logger</span><span class="o">.</span><span class="n">updateCounter</span><span class="p">)</span>
+<span class="linenos">58</span>    <span class="nb">print</span><span class="p">(</span><span class="s2">"mod2.sampleConfigVector:"</span><span class="p">)</span>
+<span class="linenos">59</span>    <span class="nb">print</span><span class="p">(</span><span class="n">mod2Logger</span><span class="o">.</span><span class="n">sampleConfigVector</span><span class="p">)</span>
 <span class="linenos">60</span>
 <span class="linenos">61</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
 <span class="linenos">62</span>    <span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Logging a user-configurable variable from a module is similar to recording a message:</p>
+<p>Logging a module variable is similar to recording a message:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">moduleLogger</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">logger</span><span class="p">(</span><span class="n">variableName</span><span class="p">,</span> <span class="n">recordingTime</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -245,18 +249,18 @@ where <code class="docutils literal notranslate"><span class="pre">variableName<
 Note that these times are given in nanoseconds.</p>
 <p>Executing the script you should thus see the following output:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span><span class="o">/</span><span class="n">codeSamples</span> <span class="o">%</span> <span class="n">python</span> <span class="n">bsk</span><span class="o">-</span><span class="mf">6.</span><span class="n">py</span>
-<span class="n">BSK_INFORMATION</span><span class="p">:</span> <span class="n">Variable</span> <span class="n">dummy</span> <span class="nb">set</span> <span class="n">to</span> <span class="mf">0.000000</span> <span class="ow">in</span> <span class="n">reset</span><span class="o">.</span>
-<span class="n">BSK_INFORMATION</span><span class="p">:</span> <span class="n">Variable</span> <span class="n">dummy</span> <span class="nb">set</span> <span class="n">to</span> <span class="mf">0.000000</span> <span class="ow">in</span> <span class="n">reset</span><span class="o">.</span>
+<span class="n">BSK_INFORMATION</span><span class="p">:</span> <span class="n">Variable</span> <span class="n">updateCounter</span> <span class="nb">set</span> <span class="n">to</span> <span class="mf">0.000000</span> <span class="ow">in</span> <span class="n">reset</span><span class="o">.</span>
+<span class="n">BSK_INFORMATION</span><span class="p">:</span> <span class="n">Variable</span> <span class="n">updateCounter</span> <span class="nb">set</span> <span class="n">to</span> <span class="mf">0.000000</span> <span class="ow">in</span> <span class="n">reset</span><span class="o">.</span>
 <span class="n">BSK_INFORMATION</span><span class="p">:</span> <span class="n">C</span> <span class="n">Module</span> <span class="n">ID</span> <span class="mi">1</span> <span class="n">ran</span> <span class="n">Update</span> <span class="n">at</span> <span class="mf">0.000000</span><span class="n">s</span>
 <span class="n">BSK_INFORMATION</span><span class="p">:</span> <span class="n">C</span><span class="o">++</span> <span class="n">Module</span> <span class="n">ID</span> <span class="mi">2</span> <span class="n">ran</span> <span class="n">Update</span> <span class="n">at</span> <span class="mf">0.000000</span><span class="n">s</span>
 <span class="n">BSK_INFORMATION</span><span class="p">:</span> <span class="n">C</span> <span class="n">Module</span> <span class="n">ID</span> <span class="mi">1</span> <span class="n">ran</span> <span class="n">Update</span> <span class="n">at</span> <span class="mf">1.000000</span><span class="n">s</span>
 <span class="n">BSK_INFORMATION</span><span class="p">:</span> <span class="n">C</span><span class="o">++</span> <span class="n">Module</span> <span class="n">ID</span> <span class="mi">2</span> <span class="n">ran</span> <span class="n">Update</span> <span class="n">at</span> <span class="mf">1.000000</span><span class="n">s</span>
 <span class="n">Times</span><span class="p">:</span>  <span class="p">[</span>         <span class="mi">0</span> <span class="mi">1000000000</span><span class="p">]</span>
-<span class="n">mod1</span><span class="o">.</span><span class="n">dummy</span><span class="p">:</span>
+<span class="n">mod1</span><span class="o">.</span><span class="n">updateCounter</span><span class="p">:</span>
 <span class="p">[</span><span class="mf">1.</span> <span class="mf">2.</span><span class="p">]</span>
-<span class="n">mod2</span><span class="o">.</span><span class="n">dummy</span><span class="p">:</span>
+<span class="n">mod2</span><span class="o">.</span><span class="n">updateCounter</span><span class="p">:</span>
 <span class="p">[</span><span class="mf">1.</span> <span class="mf">2.</span><span class="p">]</span>
-<span class="n">mod2</span><span class="o">.</span><span class="n">dumVector</span><span class="p">:</span>
+<span class="n">mod2</span><span class="o">.</span><span class="n">sampleConfigVector</span><span class="p">:</span>
 <span class="p">[[</span><span class="mf">1.</span> <span class="mf">2.</span> <span class="mf">3.</span><span class="p">]</span>
 <span class="p">[</span><span class="mf">1.</span> <span class="mf">2.</span> <span class="mf">3.</span><span class="p">]]</span>
 </pre></div>

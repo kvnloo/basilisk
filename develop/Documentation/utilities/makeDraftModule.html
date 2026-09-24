@@ -195,38 +195,31 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="makeDraftModule.moduleGenerator.checkPathToNewFolderLocation">
 <span class="sig-name descname"><span class="pre">checkPathToNewFolderLocation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/makeDraftModule.html#moduleGenerator.checkPathToNewFolderLocation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#makeDraftModule.moduleGenerator.checkPathToNewFolderLocation" title="Link to this definition"></a></dt>
-<dd><p>Make sure the supplied module destination path is correct</p>
+<dd><p>Check the destination parent without changing the working directory.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="makeDraftModule.moduleGenerator.createCModule">
 <span class="sig-name descname"><span class="pre">createCModule</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/makeDraftModule.html#moduleGenerator.createCModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#makeDraftModule.moduleGenerator.createCModule" title="Link to this definition"></a></dt>
-<dd><p>Create a C Basilisk module</p>
+<dd><p>Create a C draft, preserving existing files if generation fails.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="makeDraftModule.moduleGenerator.createCppModule">
 <span class="sig-name descname"><span class="pre">createCppModule</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/makeDraftModule.html#moduleGenerator.createCppModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#makeDraftModule.moduleGenerator.createCppModule" title="Link to this definition"></a></dt>
-<dd><p>Create a C++ Basilisk module</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="makeDraftModule.moduleGenerator.createNewModuleFolder">
-<span class="sig-name descname"><span class="pre">createNewModuleFolder</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/makeDraftModule.html#moduleGenerator.createNewModuleFolder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#makeDraftModule.moduleGenerator.createNewModuleFolder" title="Link to this definition"></a></dt>
-<dd><p>Create the new module folder</p>
+<dd><p>Create a C++ draft, preserving existing files if generation fails.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="makeDraftModule.moduleGenerator.createRstFile">
 <span class="sig-name descname"><span class="pre">createRstFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">moduleType</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/makeDraftModule.html#moduleGenerator.createRstFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#makeDraftModule.moduleGenerator.createRstFile" title="Link to this definition"></a></dt>
-<dd><p>Create the Module RST documentation draft.</p>
+<dd><p>Write the rendered documentation into the active staging directory.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="makeDraftModule.moduleGenerator.createTestFile">
-<span class="sig-name descname"><span class="pre">createTestFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/makeDraftModule.html#moduleGenerator.createTestFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#makeDraftModule.moduleGenerator.createTestFile" title="Link to this definition"></a></dt>
-<dd><p>Create a functioning python unit test file that loads the new module, creates and connect blank
-input messages, and sets up recorder modules for each output message.</p>
+<span class="sig-name descname"><span class="pre">createTestFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module_type</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/makeDraftModule.html#moduleGenerator.createTestFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#makeDraftModule.moduleGenerator.createTestFile" title="Link to this definition"></a></dt>
+<dd><p>Write the rendered smoke test into the active staging directory.</p>
 </dd></dl>
 
 <dl class="py method">

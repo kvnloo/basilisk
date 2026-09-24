@@ -184,7 +184,7 @@ module.  Keep an unused argument in the method signature and prefix its name
 with an underscore to show that it is intentionally unused:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">Reset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_current_sim_nanos</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Reset the module state."""</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">dummy</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># [-]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">updateCounter</span> <span class="o">=</span> <span class="mf">0.0</span>  <span class="c1"># [-]</span>
 </pre></div>
 </div>
 <p>This convention also prevents unused-argument reports from common Python
@@ -320,10 +320,10 @@ a Python module.</p>
 </div>
 <p>Running the above code prints:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="o">.</span><span class="n">venv</span><span class="p">)</span> <span class="n">source</span><span class="o">/</span><span class="n">codeSamples</span> <span class="o">%</span> <span class="n">python</span> <span class="n">making</span><span class="o">-</span><span class="n">pyModules</span><span class="o">.</span><span class="n">py</span>
-<span class="n">BSK_INFORMATION</span><span class="p">:</span> <span class="n">Variable</span> <span class="n">dummy</span> <span class="nb">set</span> <span class="n">to</span> <span class="mf">0.000000</span> <span class="ow">in</span> <span class="n">reset</span><span class="o">.</span>
+<span class="n">BSK_INFORMATION</span><span class="p">:</span> <span class="n">Variable</span> <span class="n">updateCounter</span> <span class="nb">set</span> <span class="n">to</span> <span class="mf">0.000000</span> <span class="ow">in</span> <span class="n">reset</span><span class="o">.</span>
 <span class="n">BSK_INFORMATION</span><span class="p">:</span> <span class="n">Reset</span> <span class="ow">in</span> <span class="n">TestPythonModule</span>
-<span class="n">BSK_INFORMATION</span><span class="p">:</span> <span class="n">Variable</span> <span class="n">dummy</span> <span class="nb">set</span> <span class="n">to</span> <span class="mf">0.000000</span> <span class="ow">in</span> <span class="n">reset</span><span class="o">.</span>
-<span class="n">BSK_INFORMATION</span><span class="p">:</span> <span class="n">Variable</span> <span class="n">dummy</span> <span class="nb">set</span> <span class="n">to</span> <span class="mf">0.000000</span> <span class="ow">in</span> <span class="n">reset</span><span class="o">.</span>
+<span class="n">BSK_INFORMATION</span><span class="p">:</span> <span class="n">Variable</span> <span class="n">updateCounter</span> <span class="nb">set</span> <span class="n">to</span> <span class="mf">0.000000</span> <span class="ow">in</span> <span class="n">reset</span><span class="o">.</span>
+<span class="n">BSK_INFORMATION</span><span class="p">:</span> <span class="n">Variable</span> <span class="n">updateCounter</span> <span class="nb">set</span> <span class="n">to</span> <span class="mf">0.000000</span> <span class="ow">in</span> <span class="n">reset</span><span class="o">.</span>
 <span class="n">InitializeSimulation</span><span class="p">()</span> <span class="n">completed</span><span class="o">...</span>
 <span class="n">BSK_INFORMATION</span><span class="p">:</span> <span class="n">C</span> <span class="n">Module</span> <span class="n">ID</span> <span class="mi">3</span> <span class="n">ran</span> <span class="n">Update</span> <span class="n">at</span> <span class="mf">0.000000</span><span class="n">s</span>
 <span class="n">BSK_INFORMATION</span><span class="p">:</span> <span class="n">Python</span> <span class="n">Module</span> <span class="n">ID</span> <span class="mi">4</span> <span class="n">ran</span> <span class="n">Update</span> <span class="n">at</span> <span class="mf">0.0</span><span class="n">s</span>

@@ -173,7 +173,7 @@
 <span class="sd">    Here discuss what parameters are being checked.  For example, in this file we are checking the values of the</span>
 <span class="sd">    variables</span>
 
-<span class="sd">    - ``dummy``</span>
+<span class="sd">    - ``updateCounter``</span>
 <span class="sd">    - ``dataVector[3]``</span>
 
 <span class="sd">    **General Documentation Comments**</span>
@@ -218,9 +218,9 @@
     <span class="c1"># Add test module to runtime call list</span>
     <span class="n">unitTestSim</span><span class="o">.</span><span class="n">AddModelToTask</span><span class="p">(</span><span class="n">unitTaskName</span><span class="p">,</span> <span class="n">module</span><span class="p">)</span>
 
-    <span class="c1"># Initialize the test module configuration data</span>
-    <span class="n">module</span><span class="o">.</span><span class="n">dummy</span> <span class="o">=</span> <span class="mi">1</span>                              <span class="c1"># update module parameter with required values</span>
-    <span class="n">module</span><span class="o">.</span><span class="n">dumVector</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]</span>
+    <span class="c1"># InitializeSimulation() clears updateCounter and preserves sampleConfigVector.</span>
+    <span class="n">module</span><span class="o">.</span><span class="n">updateCounter</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># [-] Runtime counter</span>
+    <span class="n">module</span><span class="o">.</span><span class="n">sampleConfigVector</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">]</span>  <span class="c1"># [-] Sample configuration for logging</span>
 
     <span class="c1"># Create input message and size it because the regular creator of that message</span>
     <span class="c1"># is not part of the test.</span>
@@ -231,7 +231,7 @@
     <span class="c1"># Setup logging on the test module output message so that we get all the writes to it</span>
     <span class="n">dataLog</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">dataOutMsg</span><span class="o">.</span><span class="n">recorder</span><span class="p">()</span>
     <span class="n">unitTestSim</span><span class="o">.</span><span class="n">AddModelToTask</span><span class="p">(</span><span class="n">unitTaskName</span><span class="p">,</span> <span class="n">dataLog</span><span class="p">)</span>
-    <span class="n">variableName</span> <span class="o">=</span> <span class="s2">"dummy"</span>                              <span class="c1"># name the module variable to be logged</span>
+    <span class="n">variableName</span> <span class="o">=</span> <span class="s2">"updateCounter"</span>                              <span class="c1"># name the module variable to be logged</span>
     <span class="n">moduleLog</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">logger</span><span class="p">(</span><span class="n">variableName</span><span class="p">)</span>
     <span class="n">unitTestSim</span><span class="o">.</span><span class="n">AddModelToTask</span><span class="p">(</span><span class="n">unitTaskName</span><span class="p">,</span> <span class="n">moduleLog</span><span class="p">)</span>
 
@@ -274,7 +274,7 @@
 
     <span class="c1"># compare the module results to the truth values</span>
     <span class="n">accuracy</span> <span class="o">=</span> <span class="mf">1e-12</span>
-    <span class="n">dummyTrue</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
+    <span class="n">counter_true</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]</span>
     <span class="n">variableStateNoTime</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">variableState</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trueVector</span><span class="p">)):</span>
         <span class="c1"># check a vector values</span>
@@ -286,7 +286,7 @@
                                 <span class="s2">"sec</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
         <span class="c1"># check a scalar double value</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">unitTestSupport</span><span class="o">.</span><span class="n">isDoubleEqual</span><span class="p">(</span><span class="n">variableStateNoTime</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">dummyTrue</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">accuracy</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">unitTestSupport</span><span class="o">.</span><span class="n">isDoubleEqual</span><span class="p">(</span><span class="n">variableStateNoTime</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">counter_true</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">accuracy</span><span class="p">):</span>
             <span class="n">testFailCount</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">testMessages</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"FAILED: "</span> <span class="o">+</span> <span class="n">module</span><span class="o">.</span><span class="n">ModelTag</span> <span class="o">+</span> <span class="s2">" Module failed "</span> <span class="o">+</span>
                                 <span class="n">variableName</span> <span class="o">+</span> <span class="s2">" unit test at t="</span> <span class="o">+</span>

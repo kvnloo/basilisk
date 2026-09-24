@@ -146,15 +146,25 @@
 </div>
 <section id="executive-summary">
 <h2>Executive Summary<a class="headerlink" href="#executive-summary" title="Link to this heading"></a></h2>
-<p>This is a very basic dummy C++ Basilisk module that can be used as a template to create other C++ modules.
-It mimics the functionality of <a class="reference internal" href="../cModuleTemplate/cModuleTemplate.html#cmoduletemplate"><span class="std std-ref">C Module: cModuleTemplate</span></a>.  See that module for a more complete discussion
-of how to write the RST module documentation file.</p>
+<p>The C++ module template demonstrates message handling, a simple vector calculation, reset
+behavior, and accessors for private variables. On every update, it copies an optional
+input vector and adds an increasing counter to the first component. It implements the
+same calculation as <a class="reference internal" href="../cModuleTemplate/cModuleTemplate.html#cmoduletemplate"><span class="std std-ref">C Module: cModuleTemplate</span></a> using the C++ <code class="docutils literal notranslate"><span class="pre">SysModel</span></code> interface.</p>
+<p>This page is a working example of module documentation. See <a class="reference internal" href="../../../Learn/makingModules/makingModules-3.html#makingmodules-3"><span class="std std-ref">Module RST Documentation</span></a> for
+the RST authoring tutorial.</p>
+</section>
+<section id="module-assumptions-and-limitations">
+<h2>Module Assumptions and Limitations<a class="headerlink" href="#module-assumptions-and-limitations" title="Link to this heading"></a></h2>
+<p>The vectors and counter are dimensionless teaching examples, with no physical model.
+The counter advances once per scheduled update, independently of the task period.
+No configuration is required to run the module. A connected input supplies its latest
+payload; the module does not check its age or require a new write on every update.
+A disconnected input supplies a zero vector.</p>
 </section>
 <section id="message-connection-descriptions">
 <h2>Message Connection Descriptions<a class="headerlink" href="#message-connection-descriptions" title="Link to this heading"></a></h2>
-<p>The following diagram and table list all the module input and output messages.  The module message connection is
-set by the user from Python.  The message type contains a link to the message structure definition, while the
-description provides information on what this message is used for.</p>
+<p>Connect the input from Python using <code class="docutils literal notranslate"><span class="pre">subscribeTo()</span></code>. Both messages use the three-element
+<code class="docutils literal notranslate"><span class="pre">dataVector</span></code> field of <a class="reference internal" href="../../architecture/msgPayloadDefC/CModuleTemplateMsgPayload.html#cmoduletemplatemsgpayload"><span class="std std-ref">CModuleTemplateMsgPayload</span></a>.</p>
 <div align="center" class="align-center"><div class="graphviz"><object data="../../../_images/graphviz-70be9c1ed5a069cdbf226ad9693f9d8ed67d2c17.svg" type="image/svg+xml" class="graphviz">
 <p class="warning">cppModuleTemplate module input and output messages</p></object></div>
 </div>
@@ -174,14 +184,80 @@ description provides information on what this message is used for.</p>
 <tbody>
 <tr class="row-even"><td><p>dataInMsg</p></td>
 <td><p><a class="reference internal" href="../../architecture/msgPayloadDefC/CModuleTemplateMsgPayload.html#cmoduletemplatemsgpayload"><span class="std std-ref">CModuleTemplateMsgPayload</span></a></p></td>
-<td><p>(optional) Input message description.  Note here if this message is optional, and what the default behavior is if this message is not provided.</p></td>
+<td><p>Optional dimensionless input vector. Uses a zero vector when disconnected.</p></td>
 </tr>
 <tr class="row-odd"><td><p>dataOutMsg</p></td>
 <td><p><a class="reference internal" href="../../architecture/msgPayloadDefC/CModuleTemplateMsgPayload.html#cmoduletemplatemsgpayload"><span class="std std-ref">CModuleTemplateMsgPayload</span></a></p></td>
-<td><p>Output message description.</p></td>
+<td><p>Dimensionless input vector with the update counter added to its first component. Reset publishes a zero vector; each update publishes the calculated vector.</p></td>
 </tr>
 </tbody>
 </table>
+</section>
+<section id="detailed-module-description">
+<h2>Detailed Module Description<a class="headerlink" href="#detailed-module-description" title="Link to this heading"></a></h2>
+<p>Each <code class="docutils literal notranslate"><span class="pre">UpdateState()</span></code> call increments <code class="docutils literal notranslate"><span class="pre">updateCounter</span></code>, copies the input vector, and
+adds the counter to its first component, as in Eq. <a class="reference internal" href="../cModuleTemplate/cModuleTemplate.html#equation-eq-cmoduletemplate-update">(1)</a>.
+The implementation uses <code class="docutils literal notranslate"><span class="pre">v3SetZero()</span></code> and <code class="docutils literal notranslate"><span class="pre">v3Copy()</span></code> from <a class="reference internal" href="../../architecture/utilities/linearAlgebra.html#linearalgebra"><span class="std std-ref">linearAlgebra</span></a> to
+demonstrate sample vector math. Its input scratch array is local to the update method.</p>
+<p>The C++ output message initializes itself on construction. <code class="docutils literal notranslate"><span class="pre">Reset()</span></code> clears the counter
+and publishes a zero output payload at the reset time. The next update uses a counter
+value of one. Reset preserves <code class="docutils literal notranslate"><span class="pre">sampleConfigVector</span></code>.</p>
+<section id="configuration-and-runtime-state">
+<h3>Configuration and Runtime State<a class="headerlink" href="#configuration-and-runtime-state" title="Link to this heading"></a></h3>
+<p>The private variables follow the <a class="reference internal" href="../cModuleTemplate/cModuleTemplate.html#moduletemplatevariableroles"><span class="std std-ref">configuration and runtime state roles</span></a> described for the C template:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">setSampleConfigVector()</span></code> demonstrates setting a configuration vector. Its three
+components must be positive when using the setter. The vector defaults to zero,
+survives resets and updates, and does not affect the output calculation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">setUpdateCounter()</span></code> demonstrates scalar assignment and validation, accepting a
+positive value. The counter is runtime state: <code class="docutils literal notranslate"><span class="pre">Reset()</span></code> clears it, including values
+assigned before <code class="docutils literal notranslate"><span class="pre">InitializeSimulation()</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getSampleConfigVector()</span></code> and <code class="docutils literal notranslate"><span class="pre">getUpdateCounter()</span></code> provide read access. Variable
+logging through these getters is demonstrated in <a class="reference internal" href="../../../Learn/bskPrinciples/bskPrinciples-6.html#bskprinciples-6"><span class="std std-ref">Setting and Recording Module Variables</span></a>.</p></li>
+</ul>
+</section>
+</section>
+<section id="user-guide">
+<h2>User Guide<a class="headerlink" href="#user-guide" title="Link to this heading"></a></h2>
+<p>The following complete script runs three updates, at 0, 0.5, and 1 second, and checks the
+output vectors. Add the recorder after the module to record the newly written output.
+<code class="docutils literal notranslate"><span class="pre">InitializeSimulation()</span></code> calls <code class="docutils literal notranslate"><span class="pre">Reset()</span></code> before the scheduled updates begin.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">Basilisk.architecture</span><span class="w"> </span><span class="kn">import</span> <span class="n">messaging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">Basilisk.moduleTemplates</span><span class="w"> </span><span class="kn">import</span> <span class="n">cppModuleTemplate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">Basilisk.utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimulationBaseClass</span><span class="p">,</span> <span class="n">macros</span>
+
+<span class="n">simulation</span> <span class="o">=</span> <span class="n">SimulationBaseClass</span><span class="o">.</span><span class="n">SimBaseClass</span><span class="p">()</span>
+<span class="n">time_step</span> <span class="o">=</span> <span class="n">macros</span><span class="o">.</span><span class="n">sec2nano</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>  <span class="c1"># [ns]</span>
+<span class="n">process</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">CreateNewProcess</span><span class="p">(</span><span class="s2">"exampleProcess"</span><span class="p">)</span>
+<span class="n">process</span><span class="o">.</span><span class="n">addTask</span><span class="p">(</span><span class="n">simulation</span><span class="o">.</span><span class="n">CreateNewTask</span><span class="p">(</span><span class="s2">"exampleTask"</span><span class="p">,</span> <span class="n">time_step</span><span class="p">))</span>
+
+<span class="n">module</span> <span class="o">=</span> <span class="n">cppModuleTemplate</span><span class="o">.</span><span class="n">CppModuleTemplate</span><span class="p">()</span>
+<span class="n">module</span><span class="o">.</span><span class="n">ModelTag</span> <span class="o">=</span> <span class="s2">"cppModuleExample"</span>
+<span class="n">module</span><span class="o">.</span><span class="n">setSampleConfigVector</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>  <span class="c1"># [-] Preserved by reset.</span>
+<span class="n">simulation</span><span class="o">.</span><span class="n">AddModelToTask</span><span class="p">(</span><span class="s2">"exampleTask"</span><span class="p">,</span> <span class="n">module</span><span class="p">)</span>
+
+<span class="n">input_payload</span> <span class="o">=</span> <span class="n">messaging</span><span class="o">.</span><span class="n">CModuleTemplateMsgPayload</span><span class="p">()</span>
+<span class="n">input_payload</span><span class="o">.</span><span class="n">dataVector</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">]</span>  <span class="c1"># [-]</span>
+<span class="n">input_message</span> <span class="o">=</span> <span class="n">messaging</span><span class="o">.</span><span class="n">CModuleTemplateMsg</span><span class="p">()</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">input_payload</span><span class="p">)</span>
+<span class="n">module</span><span class="o">.</span><span class="n">dataInMsg</span><span class="o">.</span><span class="n">subscribeTo</span><span class="p">(</span><span class="n">input_message</span><span class="p">)</span>
+
+<span class="n">recorder</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">dataOutMsg</span><span class="o">.</span><span class="n">recorder</span><span class="p">()</span>
+<span class="n">simulation</span><span class="o">.</span><span class="n">AddModelToTask</span><span class="p">(</span><span class="s2">"exampleTask"</span><span class="p">,</span> <span class="n">recorder</span><span class="p">)</span>
+<span class="n">simulation</span><span class="o">.</span><span class="n">InitializeSimulation</span><span class="p">()</span>
+<span class="n">simulation</span><span class="o">.</span><span class="n">ConfigureStopTime</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">time_step</span><span class="p">)</span>
+<span class="n">simulation</span><span class="o">.</span><span class="n">ExecuteSimulation</span><span class="p">()</span>
+
+<span class="n">expected</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">]]</span>  <span class="c1"># [-]</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_array_equal</span><span class="p">(</span><span class="n">recorder</span><span class="o">.</span><span class="n">dataVector</span><span class="p">,</span> <span class="n">expected</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_array_equal</span><span class="p">(</span><span class="n">recorder</span><span class="o">.</span><span class="n">times</span><span class="p">(),</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">time_step</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">time_step</span><span class="p">])</span>
+<span class="k">assert</span> <span class="n">module</span><span class="o">.</span><span class="n">getUpdateCounter</span><span class="p">()</span> <span class="o">==</span> <span class="mi">3</span>
+</pre></div>
+</div>
+<p>To try the disconnected-input case, omit the <code class="docutils literal notranslate"><span class="pre">subscribeTo()</span></code> call and change <code class="docutils literal notranslate"><span class="pre">expected</span></code>
+to <code class="docutils literal notranslate"><span class="pre">[[1.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0],</span> <span class="pre">[2.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0],</span> <span class="pre">[3.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0]]</span></code>. The initial zero payload
+written by reset is replaced by the first update before the recorder samples at time zero.</p>
 <hr class="docutils" />
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv417CppModuleTemplate">
@@ -199,44 +275,88 @@ description provides information on what this message is used for.</p>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N17CppModuleTemplateD0Ev">
-<span id="_CPPv3N17CppModuleTemplateD0Ev"></span><span id="_CPPv2N17CppModuleTemplateD0Ev"></span><span id="CppModuleTemplate::~CppModuleTemplate"></span><span class="target" id="class_cpp_module_template_1a2b7c06754f7ce9add1df24beea83ea73"></span><span class="sig-name descname"><span class="n"><span class="pre">~CppModuleTemplate</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N17CppModuleTemplateD0Ev" title="Link to this definition"></a><br /></dt>
+<span id="_CPPv3N17CppModuleTemplateD0Ev"></span><span id="_CPPv2N17CppModuleTemplateD0Ev"></span><span id="CppModuleTemplate::~CppModuleTemplate"></span><span class="target" id="class_cpp_module_template_1ac67cc62a05a74c27bb609af03d8be608"></span><span class="sig-name descname"><span class="n"><span class="pre">~CppModuleTemplate</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4N17CppModuleTemplateD0Ev" title="Link to this definition"></a><br /></dt>
 <dd><p>Module Destructor. </p>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N17CppModuleTemplate5ResetE8uint64_t">
-<span id="_CPPv3N17CppModuleTemplate5ResetE8uint64_t"></span><span id="_CPPv2N17CppModuleTemplate5ResetE8uint64_t"></span><span id="CppModuleTemplate::Reset__uint64_t"></span><span class="target" id="class_cpp_module_template_1a9a9c115507d53abb49a907fc96722dbb"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Reset</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">CurrentSimNanos</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N17CppModuleTemplate5ResetE8uint64_t" title="Link to this definition"></a><br /></dt>
-<dd><p>This method is used to reset the module. </p>
+<span id="_CPPv3N17CppModuleTemplate5ResetE8uint64_t"></span><span id="_CPPv2N17CppModuleTemplate5ResetE8uint64_t"></span><span id="CppModuleTemplate::Reset__uint64_t"></span><span class="target" id="class_cpp_module_template_1a3288762eb0084608c249b3a92608867d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Reset</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">CurrentSimNanos</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4N17CppModuleTemplate5ResetE8uint64_t" title="Link to this definition"></a><br /></dt>
+<dd><p>Reset the counter and publish a zero output payload. </p>
+<p>
+This method is used to reset the module. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The sampleConfigVector configuration is preserved.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>CurrentSimNanos</strong> – [ns] Time at which the module is reset. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N17CppModuleTemplate11UpdateStateE8uint64_t">
-<span id="_CPPv3N17CppModuleTemplate11UpdateStateE8uint64_t"></span><span id="_CPPv2N17CppModuleTemplate11UpdateStateE8uint64_t"></span><span id="CppModuleTemplate::UpdateState__uint64_t"></span><span class="target" id="class_cpp_module_template_1a95b9bbfd9f946d605f995543af2200e3"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UpdateState</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">CurrentSimNanos</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N17CppModuleTemplate11UpdateStateE8uint64_t" title="Link to this definition"></a><br /></dt>
-<dd><p>This is the main method that gets called every time the module is updated. Provide an appropriate description. </p>
+<span id="_CPPv3N17CppModuleTemplate11UpdateStateE8uint64_t"></span><span id="_CPPv2N17CppModuleTemplate11UpdateStateE8uint64_t"></span><span id="CppModuleTemplate::UpdateState__uint64_t"></span><span class="target" id="class_cpp_module_template_1a64816f5f0a79ace503ba38011f931bdc"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UpdateState</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">CurrentSimNanos</span></span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">override</span></span><a class="headerlink" href="#_CPPv4N17CppModuleTemplate11UpdateStateE8uint64_t" title="Link to this definition"></a><br /></dt>
+<dd><p>Add the update counter to the first component of the optional input vector. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>CurrentSimNanos</strong> – [ns] Time at which the module is updated. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N17CppModuleTemplate8setDummyEd">
-<span id="_CPPv3N17CppModuleTemplate8setDummyEd"></span><span id="_CPPv2N17CppModuleTemplate8setDummyEd"></span><span id="CppModuleTemplate::setDummy__double"></span><span class="target" id="class_cpp_module_template_1a403ea5d25811b7967274cc0616a8b119"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setDummy</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N17CppModuleTemplate8setDummyEd" title="Link to this definition"></a><br /></dt>
-<dd><p>setter for <code class="docutils literal notranslate"><span class="pre">dummy</span></code> property </p>
+<dt class="sig sig-object cpp" id="_CPPv4N17CppModuleTemplate16setUpdateCounterEd">
+<span id="_CPPv3N17CppModuleTemplate16setUpdateCounterEd"></span><span id="_CPPv2N17CppModuleTemplate16setUpdateCounterEd"></span><span id="CppModuleTemplate::setUpdateCounter__double"></span><span class="target" id="class_cpp_module_template_1a4d59fd0cfe8534b2d85b924d8092b79c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setUpdateCounter</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N17CppModuleTemplate16setUpdateCounterEd" title="Link to this definition"></a><br /></dt>
+<dd><p>Demonstrate scalar assignment and validation using the runtime counter. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#class_cpp_module_template_1a3288762eb0084608c249b3a92608867d"><span class="std std-ref">Reset()</span></a> always clears the counter, including after this setter is used. </p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – [-] Positive counter value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4NK17CppModuleTemplate8getDummyEv">
-<span id="_CPPv3NK17CppModuleTemplate8getDummyEv"></span><span id="_CPPv2NK17CppModuleTemplate8getDummyEv"></span><span id="CppModuleTemplate::getDummyC"></span><span class="target" id="class_cpp_module_template_1a1471a7568aa1033333a7cc57add667b8"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getDummy</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK17CppModuleTemplate8getDummyEv" title="Link to this definition"></a><br /></dt>
-<dd><p>getter for <code class="docutils literal notranslate"><span class="pre">dummy</span></code> property </p>
+<dt class="sig sig-object cpp" id="_CPPv4NK17CppModuleTemplate16getUpdateCounterEv">
+<span id="_CPPv3NK17CppModuleTemplate16getUpdateCounterEv"></span><span id="_CPPv2NK17CppModuleTemplate16getUpdateCounterEv"></span><span id="CppModuleTemplate::getUpdateCounterC"></span><span class="target" id="class_cpp_module_template_1acdbb5b835b95d144b75ed6e46265874d"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getUpdateCounter</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK17CppModuleTemplate16getUpdateCounterEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Read the runtime counter, for example for variable logging. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[-] Current counter value. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N17CppModuleTemplate12setDumVectorENSt5arrayIdXL3EEEE">
-<span id="_CPPv3N17CppModuleTemplate12setDumVectorENSt5arrayIdXL3EEEE"></span><span id="_CPPv2N17CppModuleTemplate12setDumVectorENSt5arrayIdX3EEE"></span><span id="CppModuleTemplate::setDumVector__std::array:double.3:"></span><span class="target" id="class_cpp_module_template_1ac686a38a3c969265908ef5d44f77a6de"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setDumVector</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N17CppModuleTemplate12setDumVectorENSt5arrayIdXL3EEEE" title="Link to this definition"></a><br /></dt>
-<dd><p>setter for <code class="docutils literal notranslate"><span class="pre">dumVector</span></code> property </p>
+<dt class="sig sig-object cpp" id="_CPPv4N17CppModuleTemplate21setSampleConfigVectorENSt5arrayIdXL3EEEE">
+<span id="_CPPv3N17CppModuleTemplate21setSampleConfigVectorENSt5arrayIdXL3EEEE"></span><span id="_CPPv2N17CppModuleTemplate21setSampleConfigVectorENSt5arrayIdX3EEE"></span><span id="CppModuleTemplate::setSampleConfigVector__std::array:double.3:"></span><span class="target" id="class_cpp_module_template_1a7cc0b96d65516ca960a6a48cef63a1ff"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setSampleConfigVector</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N17CppModuleTemplate21setSampleConfigVectorENSt5arrayIdXL3EEEE" title="Link to this definition"></a><br /></dt>
+<dd><p>Set the sample configuration vector used for variable logging. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="#class_cpp_module_template_1a3288762eb0084608c249b3a92608867d"><span class="std std-ref">Reset()</span></a> preserves this vector. The vector is unused by the output calculation. </p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong> – [-] Sample vector with positive components. </p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4NK17CppModuleTemplate12getDumVectorEv">
-<span id="_CPPv3NK17CppModuleTemplate12getDumVectorEv"></span><span id="_CPPv2NK17CppModuleTemplate12getDumVectorEv"></span><span id="CppModuleTemplate::getDumVectorC"></span><span class="target" id="class_cpp_module_template_1a37b0bff55665143513fd9ca595f3c6a0"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getDumVector</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK17CppModuleTemplate12getDumVectorEv" title="Link to this definition"></a><br /></dt>
-<dd><p>getter for <code class="docutils literal notranslate"><span class="pre">dumVector</span></code> property </p>
+<dt class="sig sig-object cpp" id="_CPPv4NK17CppModuleTemplate21getSampleConfigVectorEv">
+<span id="_CPPv3NK17CppModuleTemplate21getSampleConfigVectorEv"></span><span id="_CPPv2NK17CppModuleTemplate21getSampleConfigVectorEv"></span><span id="CppModuleTemplate::getSampleConfigVectorC"></span><span class="target" id="class_cpp_module_template_1a3ac28b7914c6e293d47f851c6820f654"></span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getSampleConfigVector</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><span class="w"> </span><span class="k"><span class="pre">const</span></span><a class="headerlink" href="#_CPPv4NK17CppModuleTemplate21getSampleConfigVectorEv" title="Link to this definition"></a><br /></dt>
+<dd><p>Read the sample configuration vector. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>[-] Current sample vector. </p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -264,15 +384,15 @@ description provides information on what this message is used for.</p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-private-members">Private Members</p>
 <dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N17CppModuleTemplate5dummyE">
-<span id="_CPPv3N17CppModuleTemplate5dummyE"></span><span id="_CPPv2N17CppModuleTemplate5dummyE"></span><span id="CppModuleTemplate::dummy__double"></span><span class="target" id="class_cpp_module_template_1a919369357aca76499c9d21a0fac43d3a"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dummy</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N17CppModuleTemplate5dummyE" title="Link to this definition"></a><br /></dt>
-<dd><p>[units] sample module variable declaration </p>
+<dt class="sig sig-object cpp" id="_CPPv4N17CppModuleTemplate13updateCounterE">
+<span id="_CPPv3N17CppModuleTemplate13updateCounterE"></span><span id="_CPPv2N17CppModuleTemplate13updateCounterE"></span><span id="CppModuleTemplate::updateCounter__double"></span><span class="target" id="class_cpp_module_template_1a6b12f08af07828a7af0c739db68ef0ad"></span><span class="kt"><span class="pre">double</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">updateCounter</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N17CppModuleTemplate13updateCounterE" title="Link to this definition"></a><br /></dt>
+<dd><p>[-] Runtime counter; Reset clears it and UpdateState increments it. </p>
 </dd></dl>
 
 <dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N17CppModuleTemplate9dumVectorE">
-<span id="_CPPv3N17CppModuleTemplate9dumVectorE"></span><span id="_CPPv2N17CppModuleTemplate9dumVectorE"></span><span id="CppModuleTemplate::dumVector__std::array:double.3:"></span><span class="target" id="class_cpp_module_template_1a55ee2f29977d78bfab5fd3772a560bc1"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dumVector</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N17CppModuleTemplate9dumVectorE" title="Link to this definition"></a><br /></dt>
-<dd><p>[units] sample vector variable </p>
+<dt class="sig sig-object cpp" id="_CPPv4N17CppModuleTemplate18sampleConfigVectorE">
+<span id="_CPPv3N17CppModuleTemplate18sampleConfigVectorE"></span><span id="_CPPv2N17CppModuleTemplate18sampleConfigVectorE"></span><span id="CppModuleTemplate::sampleConfigVector__std::array:double.3:"></span><span class="target" id="class_cpp_module_template_1a20e5aadb2fa474934a86d3e919e11ed2"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">array</span></span><span class="p"><span class="pre">&lt;</span></span><span class="kt"><span class="pre">double</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">3</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sampleConfigVector</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="p"><span class="pre">{</span></span><span class="p"><span class="pre">}</span></span><a class="headerlink" href="#_CPPv4N17CppModuleTemplate18sampleConfigVectorE" title="Link to this definition"></a><br /></dt>
+<dd><p>[-] Sample configuration for logging; retained by Reset and unused by UpdateState. </p>
 </dd></dl>
 
 </div>

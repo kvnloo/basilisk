@@ -153,7 +153,7 @@
 <p><code class="docutils literal notranslate"><span class="pre">Update()</span></code>:  This is the primary module routine that is called every time the simulation advanced one time step.  This routine shoudl controll all the functions that this module is to perform.</p>
 <p>The function <code class="docutils literal notranslate"><span class="pre">scSim.InitializeSimulation()</span></code> calls <code class="docutils literal notranslate"><span class="pre">SelfInit()</span></code> and <code class="docutils literal notranslate"><span class="pre">Reset()</span></code> for each module.  The <code class="docutils literal notranslate"><span class="pre">Update()</span></code> mehtod is called each task time step when the simulation is executed.</p>
 <img alt="../../_images/qs-bsk-2a.svg" class="align-center" src="../../_images/qs-bsk-2a.svg" />
-<p>The sample script below creates a single Basilisk module as illustrated above.  The module variable <code class="docutils literal notranslate"><span class="pre">dummy</span></code> is set to a non-zero value after the module is created.  The <code class="docutils literal notranslate"><span class="pre">InitializeSimulation()</span></code> method calls <code class="docutils literal notranslate"><span class="pre">Reset()</span></code> which sets this <code class="docutils literal notranslate"><span class="pre">dummy</span></code> variable equal to zero.</p>
+<p>The sample script below creates a single Basilisk module as illustrated above.  The module variable <code class="docutils literal notranslate"><span class="pre">updateCounter</span></code> is set to a non-zero value after the module is created.  The <code class="docutils literal notranslate"><span class="pre">InitializeSimulation()</span></code> method calls <code class="docutils literal notranslate"><span class="pre">Reset()</span></code> which sets this <code class="docutils literal notranslate"><span class="pre">updateCounter</span></code> variable equal to zero.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span>
 <span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">Basilisk.moduleTemplates</span><span class="w"> </span><span class="kn">import</span> <span class="n">cModuleTemplate</span>
 <span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">Basilisk.utilities</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimulationBaseClass</span>
@@ -178,16 +178,16 @@
 <span class="linenos">22</span>    <span class="n">mod1</span> <span class="o">=</span> <span class="n">cModuleTemplate</span><span class="o">.</span><span class="n">cModuleTemplate</span><span class="p">()</span>
 <span class="linenos">23</span>    <span class="n">mod1</span><span class="o">.</span><span class="n">ModelTag</span> <span class="o">=</span> <span class="s2">"cModule1"</span>
 <span class="linenos">24</span>    <span class="n">scSim</span><span class="o">.</span><span class="n">AddModelToTask</span><span class="p">(</span><span class="s2">"dynamicsTask"</span><span class="p">,</span> <span class="n">mod1</span><span class="p">)</span>
-<span class="linenos">25</span>    <span class="n">mod1</span><span class="o">.</span><span class="n">dummy</span> <span class="o">=</span> <span class="o">-</span><span class="mi">10</span>
-<span class="linenos">26</span>    <span class="nb">print</span><span class="p">(</span><span class="n">mod1</span><span class="o">.</span><span class="n">dummy</span><span class="p">)</span>
+<span class="linenos">25</span>    <span class="n">mod1</span><span class="o">.</span><span class="n">updateCounter</span> <span class="o">=</span> <span class="o">-</span><span class="mi">10</span>  <span class="c1"># [-]</span>
+<span class="linenos">26</span>    <span class="nb">print</span><span class="p">(</span><span class="n">mod1</span><span class="o">.</span><span class="n">updateCounter</span><span class="p">)</span>
 <span class="linenos">27</span>
 <span class="linenos">28</span>    <span class="c1">#  initialize Simulation:</span>
 <span class="linenos">29</span>    <span class="n">scSim</span><span class="o">.</span><span class="n">InitializeSimulation</span><span class="p">()</span>
-<span class="linenos">30</span>    <span class="nb">print</span><span class="p">(</span><span class="n">mod1</span><span class="o">.</span><span class="n">dummy</span><span class="p">)</span>
+<span class="linenos">30</span>    <span class="nb">print</span><span class="p">(</span><span class="n">mod1</span><span class="o">.</span><span class="n">updateCounter</span><span class="p">)</span>
 <span class="linenos">31</span>
 <span class="linenos">32</span>    <span class="c1"># perform a single Update on all modules</span>
 <span class="linenos">33</span>    <span class="n">scSim</span><span class="o">.</span><span class="n">TotalSim</span><span class="o">.</span><span class="n">SingleStepProcesses</span><span class="p">()</span>
-<span class="linenos">34</span>    <span class="nb">print</span><span class="p">(</span><span class="n">mod1</span><span class="o">.</span><span class="n">dummy</span><span class="p">)</span>
+<span class="linenos">34</span>    <span class="nb">print</span><span class="p">(</span><span class="n">mod1</span><span class="o">.</span><span class="n">updateCounter</span><span class="p">)</span>
 <span class="linenos">35</span>
 <span class="linenos">36</span>    <span class="k">return</span>
 <span class="linenos">37</span>
@@ -200,11 +200,13 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scSim</span><span class="o">.</span><span class="n">TotalSim</span><span class="o">.</span><span class="n">SingleStepProcesses</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>After the single process step execution the module <code class="docutils literal notranslate"><span class="pre">dummy</span></code> variable is printed out again to illustrate that an <code class="docutils literal notranslate"><span class="pre">Update()</span></code> call has occured.  Looking at the module source code you see that this variable is zero’d on reset and incremented by +1 on each <code class="docutils literal notranslate"><span class="pre">Update()</span></code> call.</p>
+<p>After the single process step execution the module <code class="docutils literal notranslate"><span class="pre">updateCounter</span></code> variable is printed again to
+illustrate that an <code class="docutils literal notranslate"><span class="pre">Update()</span></code> call has occurred. The module resets this counter to zero and
+increments it by one on each <code class="docutils literal notranslate"><span class="pre">Update()</span></code> call.</p>
 <p>If you execute this python code you should see the following terminal output:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python bsk-2a.py
 -10.0
-BSK_INFORMATION: Variable dummy set to 0.000000 in reset.
+BSK_INFORMATION: Variable updateCounter set to 0.000000 in reset.
 0.0
 BSK_INFORMATION: C Module ID 1 ran Update at 0.000000s
 1.0

@@ -186,8 +186,8 @@
 
     <span class="n">recorded</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rec</span><span class="o">.</span><span class="n">dataVector</span><span class="p">)</span>
 
-    <span class="c1"># With no input message linked, cModuleTemplate writes dataVector = [dummy, 0, 0]</span>
-    <span class="c1"># where dummy increments by 1 each step (reset to 0). So the first component must</span>
+    <span class="c1"># With no input message linked, cModuleTemplate writes dataVector = [updateCounter, 0, 0]</span>
+    <span class="c1"># where updateCounter increments by 1 each step (reset to 0). So the first component must</span>
     <span class="c1"># be the strictly increasing series 1, 2, 3, ... matching what the module wrote.</span>
     <span class="n">firstComponent</span> <span class="o">=</span> <span class="n">recorded</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
     <span class="n">expected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">firstComponent</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>

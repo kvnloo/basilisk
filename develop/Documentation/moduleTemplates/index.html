@@ -138,8 +138,9 @@
 sample C and C++ modules, as well as two modules which are auto-generated using the <a class="reference internal" href="../utilities/makeDraftModule.html#makedraftmodule"><span class="std std-ref">makeDraftModule</span></a>
 script found in <code class="docutils literal notranslate"><span class="pre">src/utilities/makeDraftModule.py</span></code>.</p>
 <p>A module folder can contain a series of related module folders.  By adding a <code class="docutils literal notranslate"><span class="pre">*.rst</span></code> file to this folder the purpose of a folder can be documented.  The <code class="docutils literal notranslate"><span class="pre">*.rst</span></code> file name should be the same as the parent folder.
-Note that the <a class="reference internal" href="cModuleTemplate/cModuleTemplate.html#cmoduletemplate"><span class="std std-ref">C Module: cModuleTemplate</span></a> has an expanded module documentation file that discusses in detail
-what can be included, and how RST can be used to include math, figures, citations, links, tables, etc.</p>
+The <a class="reference internal" href="cModuleTemplate/cModuleTemplate.html#cmoduletemplate"><span class="std std-ref">C Module: cModuleTemplate</span></a> and <a class="reference internal" href="cppModuleTemplate/cppModuleTemplate.html#cppmoduletemplate"><span class="std std-ref">C++ Module: cppModuleTemplate</span></a> documentation pages describe the sample
+calculation and include runnable Python examples. The <a class="reference internal" href="../../Learn/makingModules/makingModules-3.html#makingmodules-3"><span class="std std-ref">Module RST Documentation</span></a> tutorial explains
+how to document a module with RST, including math, figures, citations, links, tables, and code blocks.</p>
 <p>The sub-folder called <code class="docutils literal notranslate"><span class="pre">_GeneralModuleFiles</span></code> contains support <code class="docutils literal notranslate"><span class="pre">*.c/h</span></code> files that are used by all modules.  As a minimum, a file is required that defines the Module specific output message type</p>
 </section>
 <section id="usage-of-template-folders">
@@ -164,7 +165,7 @@ text inside this <code class="docutils literal notranslate"><span class="pre">*.
 <div><ul class="simple">
 <li><p>provide a unique sub-module MACRO name at the top of the file</p></li>
 <li><p>replace old module name text inside this <code class="docutils literal notranslate"><span class="pre">*.h</span></code> file with new module name</p></li>
-<li><p>add any needed Module configuration data states and remove the dummy variable</p></li>
+<li><p>add the module’s configuration and runtime state, replacing the sample <code class="docutils literal notranslate"><span class="pre">updateCounter</span></code> and <code class="docutils literal notranslate"><span class="pre">sampleConfigVector</span></code> variables</p></li>
 <li><p>add any needed output or input message interface variables</p></li>
 <li><p>add any needed sub-module specific support subroutine interface definitions</p></li>
 </ul>
@@ -180,7 +181,8 @@ text inside this <code class="docutils literal notranslate"><span class="pre">*.
 </ul>
 </div></blockquote>
 </li>
-<li><p>edit the <code class="docutils literal notranslate"><span class="pre">*.rst</span></code> file to document this module</p></li>
+<li><p>edit the <code class="docutils literal notranslate"><span class="pre">*.rst</span></code> file to document the implemented behavior, assumptions, and usage;
+see <a class="reference internal" href="../../Learn/makingModules/makingModules-3.html#makingmodules-3"><span class="std std-ref">Module RST Documentation</span></a> for the standard sections and authoring examples</p></li>
 <li><p>in the <code class="docutils literal notranslate"><span class="pre">_UnitTest</span></code> folder,</p>
 <blockquote>
 <div><ul class="simple">
@@ -211,9 +213,10 @@ Basilisk module code.  You can</p>
 </ul>
 <p>The script will create the basic draft module support code that will compile and run.  The <code class="docutils literal notranslate"><span class="pre">Reset()</span></code> method
 already checks if the input messages are connected (assuming they are all required), and <code class="docutils literal notranslate"><span class="pre">Update()</span></code> method
-provides sample code the creates buffer variables for the input and output messages, reads in the input messages,
-and write to the output messages.  The unit test already loads up the module, creates blank input message copies
-that are subscribed to the module, creates recorder modules for each output message, etc.</p>
+provides sample code that creates buffer variables for the input and output messages, reads in the input messages,
+and writes to the output messages. The generated smoke test connects blank inputs and checks scheduled
+execution and output publication. The RST draft includes the standard section outline and links to
+<a class="reference internal" href="../../Learn/makingModules/makingModules-3.html#makingmodules-3"><span class="std std-ref">Module RST Documentation</span></a>; complete its descriptions and add numerical test assertions with the algorithm.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Modules:</span></p>
 <ul>

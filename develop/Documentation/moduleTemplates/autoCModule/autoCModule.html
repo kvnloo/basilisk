@@ -148,6 +148,10 @@
 <h2>Executive Summary<a class="headerlink" href="#executive-summary" title="Link to this heading"></a></h2>
 <p>This is an auto-created sample C module.  The description is included with the module class definition</p>
 </section>
+<section id="module-assumptions-and-limitations">
+<h2>Module Assumptions and Limitations<a class="headerlink" href="#module-assumptions-and-limitations" title="Link to this heading"></a></h2>
+<p>Describe the model assumptions, required inputs, and limits on valid use.</p>
+</section>
 <section id="message-connection-descriptions">
 <h2>Message Connection Descriptions<a class="headerlink" href="#message-connection-descriptions" title="Link to this heading"></a></h2>
 <p>The following diagram and table list all the module input and output messages.
@@ -193,6 +197,20 @@ provides information on what this message is used for.</p>
 </tr>
 </tbody>
 </table>
+</section>
+<section id="detailed-module-description">
+<h2>Detailed Module Description<a class="headerlink" href="#detailed-module-description" title="Link to this heading"></a></h2>
+<p>Describe the implemented algorithm and mathematics, including units and reset behavior.
+This section is optional for modules whose behavior is fully explained above.</p>
+</section>
+<section id="user-guide">
+<h2>User Guide<a class="headerlink" href="#user-guide" title="Link to this heading"></a></h2>
+<p>Provide a runnable Python example with configuration, message connections, and expected results.
+Explain which variables are configuration and which are runtime state.
+Use <code class="docutils literal notranslate"><span class="pre">_UnitTest/test_autoCModule.py</span></code> as a starting point for simulation setup;
+its smoke checks verify execution and publication, not numerical payload values.</p>
+<p>See <a class="reference internal" href="../../../Learn/makingModules/makingModules-3.html#makingmodules-3"><span class="std std-ref">Module RST Documentation</span></a> for RST authoring instructions and <a class="reference internal" href="../cModuleTemplate/cModuleTemplate.html#cmoduletemplate"><span class="std std-ref">C Module: cModuleTemplate</span></a>
+and <a class="reference internal" href="../cppModuleTemplate/cppModuleTemplate.html#cppmoduletemplate"><span class="std std-ref">C++ Module: cppModuleTemplate</span></a> for completed module documentation examples.</p>
 <hr class="docutils" />
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
