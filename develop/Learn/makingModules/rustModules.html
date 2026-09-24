@@ -928,6 +928,20 @@ For example, inside <code class="docutils literal notranslate"><span class="pre"
 <p>For an optional input, check <code class="docutils literal notranslate"><span class="pre">is_linked()</span></code> before an explicit read. The
 generated optional fields in <code class="docutils literal notranslate"><span class="pre">inputs</span></code> already provide <code class="docutils literal notranslate"><span class="pre">Some(payload)</span></code> or
 <code class="docutils literal notranslate"><span class="pre">None</span></code> as described above.</p>
+<p>The same context authorizes queries of the subscribed message. These methods
+are available on input <code class="docutils literal notranslate"><span class="pre">MsgReader</span></code> ports. <code class="docutils literal notranslate"><span class="pre">is_written</span></code> reports whether
+that message has ever been published, <code class="docutils literal notranslate"><span class="pre">time_written</span></code> returns that
+publication time in nanoseconds, and <code class="docutils literal notranslate"><span class="pre">module_id</span></code> returns the ID of the
+module that published it:</p>
+<div class="highlight-rust notranslate"><div class="highlight"><pre><span></span><span class="kd">let</span><span class="w"> </span><span class="n">written</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">vehConfigInMsg</span><span class="p">.</span><span class="n">is_written</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">written_at</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">vehConfigInMsg</span><span class="p">.</span><span class="n">time_written</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="o">?</span><span class="p">;</span><span class="w"> </span><span class="c1">// [ns]</span>
+<span class="kd">let</span><span class="w"> </span><span class="n">writer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">self</span><span class="p">.</span><span class="n">vehConfigInMsg</span><span class="p">.</span><span class="n">module_id</span><span class="p">(</span><span class="n">context</span><span class="p">)</span><span class="o">?</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>A linked message that has never been published returns <code class="docutils literal notranslate"><span class="pre">Ok(false)</span></code> from
+<code class="docutils literal notranslate"><span class="pre">is_written</span></code> and <code class="docutils literal notranslate"><span class="pre">Ok(0)</span></code> from <code class="docutils literal notranslate"><span class="pre">time_written</span></code>. <code class="docutils literal notranslate"><span class="pre">module_id</span></code> returns an
+error until the message has been published. An unlinked or unauthorized
+reader returns an error.</p>
 <p>Keep the <code class="docutils literal notranslate"><span class="pre">MsgReader</span></code> fields in their declared configuration slots. To retain
 input data between calls, copy the payload or the required values into
 <code class="docutils literal notranslate"><span class="pre">State</span></code>; do not move or swap the readers themselves. Python’s subscription

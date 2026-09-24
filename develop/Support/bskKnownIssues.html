@@ -277,6 +277,12 @@ and logger field names accordingly. The C++ accessors are now <code class="docut
 <code class="docutils literal notranslate"><span class="pre">getUpdateCounter()</span></code>, <code class="docutils literal notranslate"><span class="pre">setSampleConfigVector()</span></code>, and <code class="docutils literal notranslate"><span class="pre">getSampleConfigVector()</span></code>;
 the old names are no longer available. <code class="docutils literal notranslate"><span class="pre">Reset()</span></code> still clears the counter and
 preserves the sample configuration vector, which is used for logging examples.</p></li>
+<li><p>GitHub issue 1573: Rust input <code class="docutils literal notranslate"><span class="pre">MsgReader</span></code> ports exposed <code class="docutils literal notranslate"><span class="pre">is_linked</span></code> but not
+whether the subscribed source had been written, when it was written, or which
+module wrote it. Readers now provide <code class="docutils literal notranslate"><span class="pre">is_written</span></code>, <code class="docutils literal notranslate"><span class="pre">time_written</span></code> in
+nanoseconds, and <code class="docutils literal notranslate"><span class="pre">module_id</span></code>, following the subscribed source header. A
+linked message that has never been published reports unwritten, time zero,
+and an error for the module ID. Output writers do not expose these queries.</p></li>
 <li><p>Incremental native builds could retain an old version in
 <code class="docutils literal notranslate"><span class="pre">Basilisk.getBuildInfo()</span></code> after <code class="docutils literal notranslate"><span class="pre">docs/source/bskVersion.txt</span></code> changed.
 CMake now tracks that file and reads the current source version instead of
