@@ -227,7 +227,7 @@ explains how the message is used.</p>
 <tbody>
 <tr class="row-even"><td><p>effectorStatusInMsg</p></td>
 <td><p><a class="reference internal" href="../../../architecture/msgPayloadDefC/DeviceStatusMsgPayload.html#devicestatusmsgpayload"><span class="std std-ref">DeviceStatusMsgPayload</span></a></p></td>
-<td><p>(Optional) Device status input; when linked, a nonzero status enables filtering and output-message publication.</p></td>
+<td><p>(Optional) Device status input; a zero status disables the constraint force and torque but not the reported violation. The effector is active when this message is not linked.</p></td>
 </tr>
 <tr class="row-odd"><td><p>constraintElements</p></td>
 <td><p><a class="reference internal" href="../../../architecture/msgPayloadDefC/ConstDynEffectorMsgPayload.html#constdyneffectormsgpayload"><span class="std std-ref">ConstDynEffectorMsgPayload</span></a></p></td>
@@ -902,13 +902,13 @@ child is attached to the hub.</p>
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N25ConstraintDynamicEffector19effectorStatusInMsgE">
 <span id="_CPPv3N25ConstraintDynamicEffector19effectorStatusInMsgE"></span><span id="_CPPv2N25ConstraintDynamicEffector19effectorStatusInMsgE"></span><span id="ConstraintDynamicEffector::effectorStatusInMsg__ReadFunctor:DeviceStatusMsgPayload:"></span><span class="target" id="class_constraint_dynamic_effector_1a5fd468b54a7a4fd951101c23e7b0bece"></span><a class="reference internal" href="../../../architecture/messaging/messaging.html#_CPPv4I0E11ReadFunctor" title="ReadFunctor"><span class="n"><span class="pre">ReadFunctor</span></span></a><span class="p"><span class="pre">&lt;</span></span><a class="reference internal" href="../../../architecture/msgPayloadDefC/DeviceStatusMsgPayload.html#_CPPv422DeviceStatusMsgPayload" title="DeviceStatusMsgPayload"><span class="n"><span class="pre">DeviceStatusMsgPayload</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">effectorStatusInMsg</span></span></span><a class="headerlink" href="#_CPPv4N25ConstraintDynamicEffector19effectorStatusInMsgE" title="Link to this definition"></a><br /></dt>
-<dd><p>input message to record device status </p>
+<dd><p>input message to toggle effector on/off </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N25ConstraintDynamicEffector14effectorStatusE">
 <span id="_CPPv3N25ConstraintDynamicEffector14effectorStatusE"></span><span id="_CPPv2N25ConstraintDynamicEffector14effectorStatusE"></span><span id="ConstraintDynamicEffector::effectorStatus__uint64_t"></span><span class="target" id="class_constraint_dynamic_effector_1aaaac380106ee56a5c5420c9d16b17743"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">effectorStatus</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><a class="headerlink" href="#_CPPv4N25ConstraintDynamicEffector14effectorStatusE" title="Link to this definition"></a><br /></dt>
-<dd><p>internal variable to toggle effector status </p>
+<dd><p>effector toggle on/off (1-active, 0-inactive) </p>
 </dd></dl>
 
 </div>

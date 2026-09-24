@@ -288,6 +288,10 @@ and an error for the module ID. Output writers do not expose these queries.</p><
 CMake now tracks that file and reads the current source version instead of
 Conan’s cached version. Running <code class="docutils literal notranslate"><span class="pre">ninja</span> <span class="pre">-j</span> <span class="pre">12</span></code> in an existing build directory
 applies the fix and refreshes the metadata without a clean build.</p></li>
+<li><p>GitHub issue 1393: The <a class="reference internal" href="../Documentation/simulation/dynamics/constraintEffector/constraintDynamicEffector.html#constraintdynamiceffector"><span class="std std-ref">C++ Module: constraintDynamicEffector</span></a> applied its constraint force and torque
+regardless of the device status message, which gated only the load filtering and the output
+message write. Commanding the effector off left its logged force at zero whereas the constraint
+kept acting on the dynamics. This is fixed in the current version.</p></li>
 </ul>
 </section>
 <section id="version-2-12-0-september-21-2026">

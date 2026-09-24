@@ -181,7 +181,59 @@
 <span id="id1"></span><h1>test_InOutMessageFiltering<a class="headerlink" href="#test-inoutmessagefiltering" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 </div>
-<dl class="py function" id="module-test_InOutMessageFiltering">
+<dl class="py class" id="module-test_InOutMessageFiltering">
+<dt class="sig sig-object py" id="test_InOutMessageFiltering.DeviceStatusRun">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">test_InOutMessageFiltering.</span></span><span class="sig-name descname"><span class="pre">DeviceStatusRun</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dvMax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dvAfterSwitch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">finalLoads</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psi_N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psiExpected_N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">momentum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#test_InOutMessageFiltering.DeviceStatusRun" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="test_InOutMessageFiltering.DeviceStatusRun.dvAfterSwitch">
+<span class="sig-name descname"><span class="pre">dvAfterSwitch</span></span><a class="headerlink" href="#test_InOutMessageFiltering.DeviceStatusRun.dvAfterSwitch" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="test_InOutMessageFiltering.DeviceStatusRun.dvMax">
+<span class="sig-name descname"><span class="pre">dvMax</span></span><a class="headerlink" href="#test_InOutMessageFiltering.DeviceStatusRun.dvMax" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="test_InOutMessageFiltering.DeviceStatusRun.finalLoads">
+<span class="sig-name descname"><span class="pre">finalLoads</span></span><a class="headerlink" href="#test_InOutMessageFiltering.DeviceStatusRun.finalLoads" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="test_InOutMessageFiltering.DeviceStatusRun.momentum">
+<span class="sig-name descname"><span class="pre">momentum</span></span><a class="headerlink" href="#test_InOutMessageFiltering.DeviceStatusRun.momentum" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="test_InOutMessageFiltering.DeviceStatusRun.psiExpected_N">
+<span class="sig-name descname"><span class="pre">psiExpected_N</span></span><a class="headerlink" href="#test_InOutMessageFiltering.DeviceStatusRun.psiExpected_N" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="test_InOutMessageFiltering.DeviceStatusRun.psi_N">
+<span class="sig-name descname"><span class="pre">psi_N</span></span><a class="headerlink" href="#test_InOutMessageFiltering.DeviceStatusRun.psi_N" title="Link to this definition"></a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_InOutMessageFiltering.run_deviceStatus_case">
+<span class="sig-prename descclassname"><span class="pre">test_InOutMessageFiltering.</span></span><span class="sig-name descname"><span class="pre">run_deviceStatus_case</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">initialStatus</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">switchTime</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/test_InOutMessageFiltering.html#run_deviceStatus_case"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#test_InOutMessageFiltering.run_deviceStatus_case" title="Link to this definition"></a></dt>
+<dd><p>Run the stretched-constraint case, toggling the device status at <code class="docutils literal notranslate"><span class="pre">switchTime</span></code> [s] when given.</p>
+<p>Returns the peak center of mass delta-V over the run and the peak accumulated after the switch [m/s], the
+final constraint force and torques, the reported and
+state-derived direction constraint violations [m], and the peak magnitude of the total linear momentum of the
+two spacecraft [kg m/s].</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="test_InOutMessageFiltering.test_constraintEffectorAllCases">
 <span class="sig-prename descclassname"><span class="pre">test_InOutMessageFiltering.</span></span><span class="sig-name descname"><span class="pre">test_constraintEffectorAllCases</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">show_plots</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CutOffFreq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">useConstEffector</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/test_InOutMessageFiltering.html#test_constraintEffectorAllCases"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#test_InOutMessageFiltering.test_constraintEffectorAllCases" title="Link to this definition"></a></dt>
 <dd><p>Module Unit Test
@@ -200,6 +252,33 @@ is approximately equal to the values calculated in Python if the effector is ON.
 frequency supplied is 0, there is no filtering. If it is negative, an error message is thrown and no filtering is performed.
 If it is positive, then we perform a low-pass filtering of the constraint forces and torques using a second-order low pass
 filter, to provide the corresponding results.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="test_InOutMessageFiltering.test_constraintEffectorDeviceStatusGatesLoads">
+<span class="sig-prename descclassname"><span class="pre">test_InOutMessageFiltering.</span></span><span class="sig-name descname"><span class="pre">test_constraintEffectorDeviceStatusGatesLoads</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../../_modules/test_InOutMessageFiltering.html#test_constraintEffectorDeviceStatusGatesLoads"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#test_InOutMessageFiltering.test_constraintEffectorDeviceStatusGatesLoads" title="Link to this definition"></a></dt>
+<dd><p>Module Unit Test
+<strong>Validation Test Description</strong></p>
+<p>This unit test checks that the device status message gates the constraint loads themselves and not only the module
+output message. The two spacecraft of <code class="docutils literal notranslate"><span class="pre">test_constraintEffectorAllCases</span></code> start in a state that already satisfies
+the constraint, so the constraint force there is negligible and the recorded dynamics cannot distinguish an
+enabled effector from a disabled one. This test therefore uses a different premise: both spacecraft start at rest
+with their attachment points held apart by more than the constraint length, so an enabled constraint imparts a
+large impulse.</p>
+<p><strong>Description of the test</strong></p>
+<p>The scenario runs four times: with the device status commanding the effector off, commanding it on, commanding
+it on before switching it off halfway through the run, and commanding it off before switching it on halfway
+through the run. Each run initializes the effector’s cached status to match the initial command. The accumulated
+center of mass delta-V of both spacecraft is recorded, along with the constraint force and torques in the output
+message and the total linear momentum of the two spacecraft. Because the constraint effector is the only effector
+attached to either spacecraft, the disabled run must accumulate no delta-V, and every run must keep the zero
+initial momentum. The enabled run must accumulate a delta-V far above that tolerance, which confirms the
+configuration exercises the constraint. The run that switches off must end with zero force and torque in its
+output message and accumulate no further delta-V, which confirms that the stored loads are cleared along with the
+applied ones, while still reporting the direction constraint violation that the logged spacecraft states imply,
+since that violation is a measurement of the drift rather than a load. The run that switches on must accumulate a
+measurable delta-V while keeping zero momentum, which confirms that a constraint disabled through initialization
+still assigns each spacecraft its own load once enabled.</p>
 </dd></dl>
 
 </section>
